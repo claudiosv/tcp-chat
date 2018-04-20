@@ -1,9 +1,7 @@
 package it.unibz;
 
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +14,8 @@ public class ChatServer {
     {
         connectedClients = new ArrayList<>();
         try {
-            ServerSocket serverSocket = new ServerSocket(9999);
+            ServerSocket serverSocket = new ServerSocket();
+            serverSocket.bind(new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 9999));
             while(true)
             {
                 TestThread thread = new TestThread(this, serverSocket.accept());

@@ -9,11 +9,11 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
+import javafx.scene.text.Font;
 
+import javax.sound.sampled.*;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.net.URL;
 import java.util.Optional;
@@ -45,7 +45,8 @@ public class ChatClientView implements Initializable {
         });
 
         textField.setOnKeyPressed(event -> { if(event.getCode() == KeyCode.ENTER) onSendButton(); });
-
+        textField.setFont(Font.font(60));
+        chatTextArea.setFont(Font.font(60));
         backgroundSocket = new BackgroundSocket();
         Thread backgroundSocketThread = new Thread(backgroundSocket);
         backgroundSocketThread.setDaemon(true);
@@ -98,6 +99,22 @@ public class ChatClientView implements Initializable {
                     Platform.runLater(() -> {
                         try {
                             chatTextArea.appendText(finalServerString + "\n");
+                            try {
+                                // Open an audio input stream.
+                                File soundFile = new File("alert.wav"); //you could also get the sound file with an URL
+                                AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+                                // Get a sound clip resource.
+                                Clip clip = AudioSystem.getClip();
+                                // Open audio clip and load samples from the audio input stream.
+                                clip.open(audioIn);
+                                clip.start();
+                            } catch (UnsupportedAudioFileException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (LineUnavailableException e) {
+                                e.printStackTrace();
+                            }
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
